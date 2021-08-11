@@ -22,7 +22,7 @@ $servers | ForEach-Object -Parallel {
 
     # #Включить WinRM
     # Write-Host 'Enabling WinRM on remote host with psexec'
-    # Start-Process -Filepath "$PSExec" -ArgumentList "\\$($server.servername) -u $($server.user) -p $($server.pass) -h -s  -accepteula -nobanner powershell.exe Enable-PSRemoting –SkipNetworkProfileCheck -Force; Set-NetFirewallRule -Name 'WINRM-HTTP-In-TCP' -RemoteAddress Any" -NoNewWindow -Wait
+    # Start-Process -Filepath "$($Using:PSExec)" -ArgumentList "\\$($server.servername) -u $($server.user) -p $($server.pass) -h -s  -accepteula -nobanner powershell.exe Enable-PSRemoting –SkipNetworkProfileCheck -Force; Set-NetFirewallRule -Name 'WINRM-HTTP-In-TCP' -RemoteAddress Any" -NoNewWindow -Wait
 
     switch ($($server.conntype)) {
         "secure" { 
@@ -35,6 +35,7 @@ $servers | ForEach-Object -Parallel {
     
     if (!$session) {
         Write-Host "Can't connect to remote computer $($server.servername)"
+        Add-content $($Using:successlog) -Value "$($server.servername);fail!!!"
         break
     }
     else {
